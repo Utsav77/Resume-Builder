@@ -43,9 +43,11 @@ session_start();
                             <div class="form-group">
                                 <label>Date of Birth</label>
                                 <input type="date" class="form-control" name="dob" required>
+                                <p id="dob" style="color:red;"></p>
                             </div>
                             <div class="form-group">
                                 <label>Gender</label><br>
+                                <p id="gender" style="color:red;"></p>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="gender[]" id="inlineRadio1" value="male">
                                     <label class="form-check-label" for="inlineRadio1">Male</label>
@@ -71,6 +73,7 @@ session_start();
                             </div>
                             <div class="form-group">
                                 <label>Skills</label><br>
+                                <p id="skills" style="color:red;"></p>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="checkbox" id="inlineCheckbox1" name="skills[]" value="python">
                                     <label class="form-check-label" for="inlineCheckbox1">Python</label>
@@ -94,11 +97,13 @@ session_start();
                             </div>
                             <div class="form-group">
                                 <label>About</label>
+                                <p id="about" style="color:red;"></p>
                                 <textarea class="form-control" aria-label="With textarea" name="about"></textarea>
                             </div>
                             <div class="form-group">
                                 <label>Address</label>
                                 <textarea class="form-control" aria-label="With textarea" name="address"></textarea>
+                                <p id="address" style="color:red;"></p>
                             </div>
                             <div class="input-group">
                                 <div class="input-group-prepend">
