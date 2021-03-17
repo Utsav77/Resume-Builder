@@ -1,109 +1,22 @@
 <?php
-session_start();
+
+// Function To PreProcess The Input Fields
+function preProcessInput($data)
+{
+    $data = trim($data);
+    $data = stripcslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+
+// All variables
+$email = $name = $gender = $phone = $addr =  $education  = $linkedin =  "";
+$skill = $interests = [];
+$emailErr =  $nameErr = $genderErr = $phoneErr = $addrErr =  $educationErr  = $linkedinErr = $skillErr = $interestsErr = $imgErr =  "";
+
+//Validate Image
 if(isset($_POST["submit"]))
 {
-    $username = $_POST["username"];
-    $dob = $_POST["dob"];
-    $gender = $_POST["gender"];
-    $email = $_POST["email"];
-    $contact = $_POST["contact"];
-    $skills = $_POST["skills"];
-    $about = $_POST["about"];
-    $address = $_POST["address"];
-    $education = $_POST["education"];
-    $interest = $_POST["interest"];
-    $website = $_POST["website"];
-    $error = false;
-    
-    
-    if(empty($username))
-    {
-        echo "Please enter your name" . "<br />";
-        $error = true;
-    }
-    else if(strlen($username) < 5)
-    {
-        echo '<p style="color:red;">Username should be minimum 5 characters</p>';
-        $error = true;
-    }
-    
-    if(empty($dob))
-    {
-        echo "Please enter your date of birth" . "<br />";
-        $error = true;
-    }
-
-    elseif (time() < strtotime('+18 years', strtotime($dob))) {
-        echo '<p style="color:red;">Users age should be greater than 18 years</p>';
-        $error = true;
-    }
-
-    if(empty($gender))
-    {
-        echo "Please select your gender" . "<br />";
-        $error = true;
-    }
-
-    if(empty($email))
-    {
-        echo "Please enter your email" . "<br />";
-        $error = true;
-    }
-    elseif (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    } 
-    else {
-        echo("<b>$email</b> is not a valid email address")  . "<br />";
-        $error = true;
-    }
-
-    if(empty($contact))
-    {
-        echo "Please enter your Contact Number" . "<br />";
-        $error = true;
-    }
-
-    elseif(strlen($contact) != 10)
-    {
-        echo '<p style="color:red;">Contact Number should be consists of 10 digits.</p>';
-        $error = true;
-    }
-
-    if(empty($about))
-    {
-        echo "Please write about your yourself" . "<br />";
-        $error = true;
-    }
-    elseif(strlen($about) > 40)
-    {
-        echo '<p style="color:red;">About should be less than 40 characters.</p>';
-        $error = true;
-    }
-
-    if(empty($address))
-    {
-        echo "Please enter your address" . "<br />";
-        $error = true;
-    }
-    elseif(strlen($address) > 100)
-    {
-        echo '<p style="color:red;">Address should be less than 100 characters</p>';
-        $error = true;
-    }
-
-    if(empty($education))
-    {
-        echo "Please select your educational qualification" . "<br />";
-        $error = true;
-    }
-
-    if(filter_var($website, FILTER_VALIDATE_URL)) {
-
-    }
-    else {
-        echo "<p><b>$website</b> is not a valid URL</p>";
-        $error = true;
-    }
-
     if(!empty($_FILES["image"]["name"]))
     {
         //user has browsed a file to upload
@@ -133,66 +46,155 @@ if(isset($_POST["submit"]))
 
                 if($_FILES["image"]["size"] < 1000000)
                 {
-                    $uploaded = move_uploaded_file($_FILES["image"]["tmp_name"],"../assets/" . $new_name);
+                    $uploaded = move_uploaded_file($_FILES["image"]["tmp_name"],"./assets/" . $new_name);
                     if($uploaded)
                     {
-                        $image = "../assets/".$new_name;
+                        $image = "./assets/".$new_name;
                     }
                     else
                     {
-                        echo "File could not be uploaded";
-                        echo "<br />";
-                        $error = true;
+                        $imgErr = "File could not be uploaded";
                     }   
                 }
                 else
                 {
-                    echo "File should be less than 1MB " . $_FILES["image"]["size"];
-                    echo "<br />";
-                    $error = true;
+                    $imgErr = "File should be less than 1MB " . $_FILES["image"]["size"];
                 }
             }
             else
             {
                 //invalid file type
-                echo "Please upload JPG or PNG files";
-                echo "<br />";
-                $error = true;
+                $imgErr = "Please upload JPG or PNG files";
             }
         }
         else
         {
             //error with the file uploading
-            echo "There are some errors with the file";
-            echo "<br />";
-            $error = true;
+            $imgErr = "There are some errors with the file";
         }
     }
     else
     {
         //error message for not selecting any file
-        echo "Please browse a file to upload";
-        echo "<br />";
-        $error = true;
+        $imgErr = "Please browse a file to upload";
     }
-    
-    
-    if(!$error)
-    {
-        $_SESSION["username"] = $username;
-        $_SESSION["dob"] = $dob;
-        $_SESSION["gender"] = $gender;
-        $_SESSION["email"] = $email;
-        $_SESSION["contact"] = $contact;
-        $_SESSION["skills"] = $skills;
-        $_SESSION["about"] = $about;
-        $_SESSION["address"] = $address;
-        $_SESSION["education"] = $education;
-        $_SESSION["interest"] = $interest;
-        $_SESSION["website"] = $website;
-        $_SESSION["image"] = $image;
-        header("location:profile.php"); 
-    }
-    echo '<a href="../index.php">Go to Registration Page</a>';
 }
-?>
+
+// Function to do Validation of Fields
+function validateFields($key, $re, $ifEmpty, $ifInvalid)
+{
+    $data = $_POST[$key];
+    if (empty($data))
+        return $ifEmpty;
+    else {
+        $tmp = preProcessInput($data);
+        if (!preg_match($re, $tmp))
+            return $ifInvalid;
+    }
+
+    return "";
+}
+
+// Function to valiate URL
+function validateURL($key, $ifEmpty, $ifInvalid)
+{
+    $url = $_POST[$key];
+    if ($url == "") return "";
+    if (!filter_var($url, FILTER_VALIDATE_URL)) {
+        return $ifInvalid;
+    }
+    return "";
+}
+
+// Validate Date 
+function validateDate($key, $ifEmpty, $ifUnder , $ifInvalid)
+{
+    $data = $_POST[$key];
+    if (empty($data))
+        return $ifEmpty;
+    else {
+        $test_arr  = explode('-', $data);
+        if (checkdate($test_arr[1], $test_arr[2], $test_arr[0])) {
+            if (time() < strtotime('+15 years', strtotime($data)))
+                return $ifUnder;
+            elseif ($test_arr[0] < 1900 )
+                return $ifInvalid;
+        }
+    }
+    return "";
+}
+
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    // Name Validation
+    $_SESSION["name"] = $name = $_POST["name"];
+    $nameErr =   validateFields(
+        "name",
+        '/^[a-zA-Z ]{1,40}$/',
+        "Name is Required!",
+        "Name must only contains alphabets and length should be greater than 0 and less than 40"
+    );
+
+    // Date of Birth Validation
+    $_SESSION["dob"] =  $dob = $_POST["dob"];
+    $dobErr = $nameErr ? "" : validateDate("dob", "Date of Birth is Required!", "User should be atleast 15 years old" , "Year of birth should be greater than 1900");
+
+    // Gender Validation
+    if (empty($_POST['gender']))
+        $genderErr =  $nameErr || $dobErr  ? "" : "Gender is Required!";
+    else
+        $_SESSION["gender"] = $gender = $_POST['gender'];
+
+    // Email Validation
+    $_SESSION["email"] = $email =  $_POST["email"];
+    $emailErr = $nameErr || $dobErr || $genderErr   ? "" :  validateFields(
+        "email",
+        '/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/',
+        "Email is Required!",
+        "Enter valid email id"
+    );
+
+    // Phone No validation
+    $_SESSION["phone"] = $phone = $_POST["phone"];
+    $phoneErr = $nameErr || $dobErr || $genderErr  || $emailErr  ? "" :  validateFields("phone", '/^\d{10}$/', "Phone no is Required!", "Enter valid phone no.", "Another account with same PHONE NO exist!");
+
+    // skilss Validation
+    $_SESSION["skill"] = $skill = $_POST["skill"];
+    $skillErr = $nameErr || $dobErr || $genderErr  || $emailErr || $phoneErr ? "" : (count($skill) === 0 ? "Skills are required!" : "");
+
+    // Vaidate Image 
+    $_SESSION["image"] = $image;
+    $imgErr = $nameErr || $dobErr || $genderErr  || $emailErr || $phoneErr || $skillErr ? "" : $imgErr;
+    
+    // About is Optional
+    $_SESSION["about"] = $about = $_POST['about'];
+
+    // Validate Address
+    $_SESSION["addr"] = $addr = $_POST["addr"];
+    $addrErr = $nameErr || $dobErr || $genderErr  || $emailErr || $phoneErr || $skillErr || $imgErr   ? "" : ($addr == "" ? "Addesss is required!" : "");
+
+    //  Education Qualification
+    $_SESSION["education"] = $education = $_POST["education"];
+    $educationErr = $nameErr || $dobErr || $genderErr  || $emailErr || $phoneErr || $skillErr || $imgErr  || $addrErr  ? "" : ($education == "" ? "Education field is required!" : "");
+
+    // Interests
+    $_SESSION["interests"] = $interests = $_POST["interests"];
+    $interestsErr = $nameErr || $dobErr || $genderErr  || $emailErr || $phoneErr || $skillErr || $imgErr  || $addrErr || $educationErr ? "" : (count($interests) === 0 ? "Interests are required!" : "");
+
+    // Validate Linkedin
+    $_SESSION["linkedin"] = $linkedin = $_POST["linkedin"];
+    $linkedinErr = $nameErr || $dobErr || $genderErr  || $emailErr || $phoneErr || $skillErr || $imgErr  || $addrErr || $educationErr || $interestsErr ? "" :  validateURL(
+        "linkedin",
+        "",
+        "Enter valid Linked URL"
+    );
+
+
+
+
+    if (!$nameErr && !$dobErr && !$genderErr && !$emailErr && !$phoneErr && !$skillErr &&  !$imgErr &&  !$addrErr && !$educationErr && !$interestsErr && !$linkedinErr && !$githubErr) {
+        header('Location: ./php/profile.php');
+        exit();
+    }
+}
