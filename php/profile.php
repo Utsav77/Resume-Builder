@@ -5,7 +5,7 @@ session_start();
 if(!isset($_SESSION["name"]))
 {
     //redirect to login page
-    header('Location: ./index.php');
+    header('Location: ../index.php');
 }
 
 
@@ -21,7 +21,7 @@ if(!isset($_SESSION["name"]))
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <!-- External CSS -->
-    <link rel="stylesheet" href="./css/form.css"/>
+    <link rel="stylesheet" href="../css/form.css"/>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css" integrity="sha512-ARJR74swou2y0Q2V9k0GbzQ/5vJ2RBSoCWokg4zkfM29Fb3vZEQyv0iWBMW/yvKgyHSR/7D64pFMmU8nYmbRkg==" crossorigin="anonymous" />
   </head>
@@ -37,7 +37,7 @@ if(!isset($_SESSION["name"]))
               <h2>Resume</h2>
             </div>
             <div class="col text-right my-auto">
-              <button onclick="location.href = './php/logout.php';" type="button" class="btn btn-light">Logout</button>
+              <button onclick="location.href = 'logout.php';" type="button" class="btn btn-light">Logout</button>
             </div>
           </div>
         </div>

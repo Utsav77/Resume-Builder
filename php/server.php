@@ -46,10 +46,10 @@ if(isset($_POST["submit"]))
 
                 if($_FILES["image"]["size"] < 1000000)
                 {
-                    $uploaded = move_uploaded_file($_FILES["image"]["tmp_name"],"./assets/" . $new_name);
+                    $uploaded = move_uploaded_file($_FILES["image"]["tmp_name"],"../assets/" . $new_name);
                     if($uploaded)
                     {
-                        $image = "./assets/".$new_name;
+                        $image = "../assets/".$new_name;
                     }
                     else
                     {
@@ -194,7 +194,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     if (!$nameErr && !$dobErr && !$genderErr && !$emailErr && !$phoneErr && !$skillErr &&  !$imgErr &&  !$addrErr && !$educationErr && !$interestsErr && !$linkedinErr && !$githubErr) {
-        header('Location: ./php/profile.php');
+        header('Location: profile.php');
         exit();
     }
 }
